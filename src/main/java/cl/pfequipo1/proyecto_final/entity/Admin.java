@@ -18,4 +18,14 @@ public class Admin {
 
     @Column(nullable = false, unique = true)
     private String password;
+
+	public Object getPassword() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPassword(Object password2) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -19,5 +19,25 @@ public class Company {
 
     @Column(nullable = false, unique = true)
     private String companyApiKey;
+
+	public Object getCompanyName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setCompanyName(Object companyName2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Object getCompanyApiKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setCompanyApiKey(Object companyApiKey2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
