@@ -3,19 +3,18 @@ package cl.pfequipo1.proyecto_final.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
 @Table(name = "admin")
-@Data // Genera getters, setters, toString, equals y hashCode
-@NoArgsConstructor // Constructor sin parámetros
-@AllArgsConstructor // Constructor con todos los parámetros
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Admin {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, unique = true)
+    private String userName;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String password;
 }

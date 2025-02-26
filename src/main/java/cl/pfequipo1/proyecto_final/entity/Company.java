@@ -3,8 +3,6 @@ package cl.pfequipo1.proyecto_final.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-
 @Entity
 @Table(name = "company")
 @Data

@@ -1,6 +1,5 @@
 package cl.pfequipo1.proyecto_final.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,3 +25,4 @@ public class Location {
     private String locationCity;
     private String locationMeta;
 }
+

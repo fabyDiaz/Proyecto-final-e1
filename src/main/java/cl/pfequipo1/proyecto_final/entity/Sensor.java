@@ -1,6 +1,5 @@
 package cl.pfequipo1.proyecto_final.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
