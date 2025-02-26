@@ -9,8 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Admin {
+    @Id
     @Column(nullable = false, unique = true)
-    private String userName;
+    private String username;
 
     @Column(nullable = false, unique = true)
     private String role;
