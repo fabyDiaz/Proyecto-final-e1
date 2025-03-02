@@ -1,43 +1,75 @@
 package cl.pfequipo1.proyecto_final.entity;
 
+
 import jakarta.persistence.*;
-import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "company")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "companies")
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "company_name", nullable = false)
     private String companyName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "company_api_key", nullable = false, unique = true)
     private String companyApiKey;
 
-	public Object getCompanyName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Location> locations = new ArrayList<>();
 
-	public void setCompanyName(Object companyName2) {
-		// TODO Auto-generated method stub
-		
-	}
+    public Company() {
+    }
 
-	public Object getCompanyApiKey() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Company(String companyName, String companyApiKey) {
+        this.companyName = companyName;
+        this.companyApiKey = companyApiKey;
+    }
 
-	public void setCompanyApiKey(Object companyApiKey2) {
-		// TODO Auto-generated method stub
-		
-	}
+    // Getters / Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyApiKey() {
+        return companyApiKey;
+    }
+
+    public void setCompanyApiKey(String companyApiKey) {
+        this.companyApiKey = companyApiKey;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+
+    public void addLocation(Location location) {
+        locations.add(location);
+        location.setCompany(this);
+    }
+
+    public void removeLocation(Location location) {
+        locations.remove(location);
+        location.setCompany(null);
+    }
 }
-
