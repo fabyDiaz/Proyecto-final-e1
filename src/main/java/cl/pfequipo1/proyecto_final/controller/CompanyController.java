@@ -1,7 +1,11 @@
 package cl.pfequipo1.proyecto_final.controller;
 
+import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
+import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 import cl.pfequipo1.proyecto_final.entity.Company;
-import cl.pfequipo1.proyecto_final.repository.CompanyRepository;
+import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,23 +15,27 @@ import java.util.List;
 @RequestMapping("/api/v1/companies")
 public class CompanyController {
 
-    private final CompanyRepository companyRepository;
+    @Autowired
+    private CompanyServiceImpl companyService;
 
-    public CompanyController(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
 
     @GetMapping
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll();
+    public List<CompanyDTO> getAllCompanies() {
+        return companyService.findAll();
     }
 
     @PostMapping
+    public ResponseEntity<CompanyDTO> create(@RequestBody CompanyRequestDTO companyRequestDTO) {
+        CompanyDTO createdCompany = companyService.create(companyRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCompany);
+    }
+
+/*    @PostMapping
     public Company createCompany(@RequestBody Company company) {
         return companyRepository.save(company);
     }
 
-    @GetMapping("/{id}")
+   @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable Integer id) {
         return companyRepository.findById(id)
                 .map(ResponseEntity::ok)
@@ -53,5 +61,7 @@ public class CompanyController {
         }
         return ResponseEntity.notFound().build();
     }
+
+  */
 }
 
