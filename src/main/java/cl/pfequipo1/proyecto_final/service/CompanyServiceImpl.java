@@ -28,7 +28,6 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public CompanyDTO findById(Integer id) {
         // Buscar la compañía por ID o lanzar excepción si no existe
         Company company = companyRepository.findById(id)

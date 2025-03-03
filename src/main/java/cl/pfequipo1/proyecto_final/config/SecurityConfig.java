@@ -4,6 +4,7 @@ import cl.pfequipo1.proyecto_final.service.AdminUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,7 +40,20 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/companies/**").hasRole("ADMIN");
+                    // Rutas públicas para visualizar compañías y localidades
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/locations/**").permitAll();
+
+                    // Rutas protegidas para modificaciones (POST, PUT, DELETE)
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/companies/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/companies/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/companies/**").hasRole("ADMIN");
+
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/locations/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/locations/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/locations/**").hasRole("ADMIN");
+
+                    // Cualquier otra ruta debe estar autenticada
                     auth.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
