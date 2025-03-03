@@ -1,7 +1,11 @@
 package cl.pfequipo1.proyecto_final.controller;
 
+import cl.pfequipo1.proyecto_final.dto.LocationDTO;
 import cl.pfequipo1.proyecto_final.entity.Location;
 import cl.pfequipo1.proyecto_final.repository.LocationRepository;
+import cl.pfequipo1.proyecto_final.service.LocationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,49 +15,14 @@ import java.util.List;
 @RequestMapping("/api/v1/locations")
 public class LocationController {
 
-    private final LocationRepository locationRepository;
-
-    public LocationController(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
-    }
-
-    @GetMapping
-    public List<Location> getAllLocations() {
-        return locationRepository.findAll();
-    }
+    @Autowired
+    private LocationServiceImpl locationService;
 
     @PostMapping
-    public Location createLocation(@RequestBody Location location) {
-        return locationRepository.save(location);
-    }
+    public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Location> getLocationById(@PathVariable Integer id) {
-        return locationRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Location> updateLocation(@PathVariable Integer id, @RequestBody Location updatedLocation) {
-        return locationRepository.findById(id)
-                .map(location -> {
-                    location.setLocationName(updatedLocation.getLocationName());
-                    location.setLocationCountry(updatedLocation.getLocationCountry());
-                    location.setLocationCity(updatedLocation.getLocationCity());
-                    location.setLocationMeta(updatedLocation.getLocationMeta());
-                    return ResponseEntity.ok(locationRepository.save(location));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLocation(@PathVariable Integer id) {
-        if (locationRepository.existsById(id)) {
-            locationRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        LocationDTO createdLocation = locationService.create(locationDTO, companyApiKey);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
     }
 }
 
