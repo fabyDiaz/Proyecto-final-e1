@@ -28,11 +28,18 @@ public class SecurityConfig {
     @Autowired
     private AdminUserDetailsService adminUserDetailsService;
 
+    /**
+     * Protege los endpoints de company
+     * @param httpSecurity
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/api/v1/companies/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())

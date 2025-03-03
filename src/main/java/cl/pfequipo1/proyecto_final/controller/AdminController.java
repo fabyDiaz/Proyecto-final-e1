@@ -19,35 +19,5 @@ public class AdminController {
         return adminService.findAll();
     }
 
-   /* @PostMapping
-    public Admin createAdmin(@RequestBody Admin admin) {
-        return adminService.save(admin);
-    }
-
-    @GetMapping("/{username}")
-    public ResponseEntity<Admin> getAdminById(@PathVariable String username) {
-        return adminService.findById(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PutMapping("/{username}")
-    public ResponseEntity<Admin> updateAdmin(@PathVariable String username, @RequestBody Admin updatedAdmin) {
-        return adminService.findById(username)
-                .map(admin -> {
-                    admin.setPassword(updatedAdmin.getPassword());
-                    return ResponseEntity.ok(adminService.save(admin));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteAdmin(@PathVariable String username) {
-        if (adminService.existsById(username)) {
-            adminService.deleteById(username);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }*/
 }
 

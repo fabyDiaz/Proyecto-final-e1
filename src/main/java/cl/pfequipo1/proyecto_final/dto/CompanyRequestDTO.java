@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CompanyRequestDTO {
     private String companyName;
-    private String companyApiKey;
+    // No incluimos companyApiKey aquí, ya que será generada automáticamente
+    //private String companyApiKey;
 }

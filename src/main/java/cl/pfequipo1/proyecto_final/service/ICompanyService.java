@@ -10,4 +10,7 @@ public interface ICompanyService {
 
     public List<CompanyDTO> findAll();
     public CompanyDTO create(CompanyRequestDTO companyRequestDTO);
+    public CompanyDTO update(Integer id, CompanyRequestDTO companyRequestDTO);
+    public void delete(Integer id);
+    public CompanyDTO findById(Integer id);
 }
