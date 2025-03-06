@@ -1,8 +1,12 @@
 package cl.pfequipo1.proyecto_final.controller;
 
-import cl.pfequipo1.proyecto_final.entity.Company;
-import cl.pfequipo1.proyecto_final.repository.CompanyRepository;
+import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
+import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
+import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,47 +15,45 @@ import java.util.List;
 @RequestMapping("/api/v1/companies")
 public class CompanyController {
 
-    private final CompanyRepository companyRepository;
+    @Autowired
+    private CompanyServiceImpl companyService;
 
-    public CompanyController(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
 
     @GetMapping
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll();
-    }
-
-    @PostMapping
-    public Company createCompany(@RequestBody Company company) {
-        return companyRepository.save(company);
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<CompanyDTO> getAllCompanies() {
+        return companyService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompanyById(@PathVariable Integer id) {
-        return companyRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CompanyDTO> findById(@PathVariable Integer id) {
+        CompanyDTO companyDTO = companyService.findById(id);
+        return ResponseEntity.ok(companyDTO);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CompanyDTO> create(@RequestBody CompanyRequestDTO companyRequestDTO) {
+        CompanyDTO createdCompany = companyService.create(companyRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCompany);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompany(@PathVariable Integer id, @RequestBody Company updatedCompany) {
-        return companyRepository.findById(id)
-                .map(company -> {
-                    company.setCompanyName(updatedCompany.getCompanyName());
-                    company.setCompanyApiKey(updatedCompany.getCompanyApiKey());
-                    return ResponseEntity.ok(companyRepository.save(company));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CompanyDTO> updateCompany(@PathVariable Integer id, @RequestBody CompanyRequestDTO companyRequestDTO) {
+
+        CompanyDTO updatedCompany = companyService.update(id, companyRequestDTO);
+        return ResponseEntity.ok(updatedCompany);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompany(@PathVariable Integer id) {
-        if (companyRepository.existsById(id)) {
-            companyRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
+        companyService.delete(id);
+        return ResponseEntity.ok("Compañía eliminada"+id);
     }
+
+
 }
 
