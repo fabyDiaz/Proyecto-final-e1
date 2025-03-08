@@ -16,4 +16,12 @@ public class LocationDTO {
     private String locationCity;
     private String locationMeta;
     private Integer companyId; // Para saber a qué compañía pertenece
+
+    public LocationDTO(Integer locationId, String locationName, String locationCountry, String locationCity, String locationMeta) {
+        this.locationId = locationId;
+        this.locationName = locationName;
+        this.locationCountry = locationCountry;
+        this.locationCity = locationCity;
+        this.locationMeta = locationMeta;
+    }
 }

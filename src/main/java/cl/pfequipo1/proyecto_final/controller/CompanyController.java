@@ -20,13 +20,11 @@ public class CompanyController {
 
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public List<CompanyDTO> getAllCompanies() {
         return companyService.findAll();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyDTO> findById(@PathVariable Integer id) {
         CompanyDTO companyDTO = companyService.findById(id);
         return ResponseEntity.ok(companyDTO);
