@@ -11,14 +11,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-
-public interface AdminRepository extends JpaRepository<Admin, Integer> {
-
-	Optional<Admin> findById(String username);
-
-	boolean existsById(String username);
-
-	void deleteById(String username);
+public interface AdminRepository extends JpaRepository<Admin, String> {
 }
-
 
