@@ -65,6 +65,7 @@ public class LocationServiceImpl implements ILocationService{
                         .locationCountry(location.getLocationCountry())
                         .locationCity(location.getLocationCity())
                         .locationMeta(location.getLocationMeta())
+                        .companyId(company.getId())
                         .build())
                 .toList();
     }
