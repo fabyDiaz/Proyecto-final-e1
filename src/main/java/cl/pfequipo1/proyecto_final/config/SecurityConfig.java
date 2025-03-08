@@ -57,6 +57,7 @@ public class SecurityConfig {
 
                     // Cualquier otra ruta debe estar autenticada
                     auth.anyRequest().authenticated();
+
                 })
                 .httpBasic(Customizer.withDefaults())
                 .build();
