@@ -1,9 +1,6 @@
 package cl.pfequipo1.proyecto_final.controller;
 
-import cl.pfequipo1.proyecto_final.dto.LocationDTO;
 import cl.pfequipo1.proyecto_final.dto.SensorDTO;
-import cl.pfequipo1.proyecto_final.dto.SensorRequestDTO;
-import cl.pfequipo1.proyecto_final.service.LocationServiceImpl;
 import cl.pfequipo1.proyecto_final.service.SensorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
