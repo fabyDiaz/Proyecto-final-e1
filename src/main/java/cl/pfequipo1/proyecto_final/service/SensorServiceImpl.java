@@ -1,8 +1,6 @@
 package cl.pfequipo1.proyecto_final.service;
 
-import cl.pfequipo1.proyecto_final.dto.LocationDTO;
 import cl.pfequipo1.proyecto_final.dto.SensorDTO;
-import cl.pfequipo1.proyecto_final.dto.SensorRequestDTO;
 import cl.pfequipo1.proyecto_final.entity.Company;
 import cl.pfequipo1.proyecto_final.entity.Location;
 import cl.pfequipo1.proyecto_final.entity.Sensor;
@@ -118,7 +116,7 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public SensorDTO update(Integer sensorId, SensorRequestDTO sensorRequestDTO, String companyApiKey, String adminUsername, String adminPassword) {
+    public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey, String adminUsername, String adminPassword) {
         return null;
     }
 
