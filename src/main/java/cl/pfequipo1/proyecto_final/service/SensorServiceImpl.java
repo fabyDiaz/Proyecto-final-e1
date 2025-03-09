@@ -39,10 +39,12 @@ public class SensorServiceImpl implements ISensorService{
         // Buscar todas las localidades de esta compañía
         List<Location> locations = locationRepository.findByCompany(company);
 
-        // Buscar todos los sensores de estas localidades
-        List<SensorDTO> sensors = new ArrayList<>();
+        // Lista para almacenar todos los sensores
+        List<SensorDTO> allSensors = new ArrayList<>();
         for (Location location : locations) {
-            sensors.stream()
+            List<Sensor> locationSensors = sensorRepository.findByLocation(location);
+            System.out.println(location.getLocationId());
+            List<SensorDTO> locationSensorDTOs = locationSensors.stream()
                     .map(sensor -> SensorDTO.builder()
                             .sensorId(sensor.getSensorId())
                             .locationId(location.getLocationId())
@@ -50,9 +52,16 @@ public class SensorServiceImpl implements ISensorService{
                             .sensorCategory(sensor.getSensorCategory())
                             .sensorMeta(sensor.getSensorMeta())
                             .build())
-                    .toList();;
+                    .toList();
+
+            // Agregar los DTOs a la lista principal
+            allSensors.addAll(locationSensorDTOs);
+            allSensors.stream().forEach(sensorDTO -> {
+                System.out.println(sensorDTO.getSensorName());
+            });
+
         }
-        return sensors;
+        return allSensors;
     }
 
     @Override
@@ -66,13 +75,13 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public SensorDTO create(SensorRequestDTO sensorRequestDTO, String companyApiKey, String adminUsername, String adminPassword) {
+    public SensorDTO create(SensorDTO sensorDTO, String companyApiKey) {
 
         // Validar que la API key existe
         Company company = companyRepository.findByCompanyApiKey(companyApiKey)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
 
-        Location location = locationRepository.findById(sensorRequestDTO.getLocationId())
+        Location location = locationRepository.findById(sensorDTO.getLocationId())
                 .orElseThrow(() -> new RuntimeException("Location not found"));
 
         // Generar una API key única
@@ -80,9 +89,9 @@ public class SensorServiceImpl implements ISensorService{
 
         Sensor sensor = Sensor.builder()
                 .location(location)
-                .sensorName(sensorRequestDTO.getSensorName())
-                .sensorCategory(sensorRequestDTO.getSensorCategory())
-                .sensorMeta(sensorRequestDTO.getSensorMeta())
+                .sensorName(sensorDTO.getSensorName())
+                .sensorCategory(sensorDTO.getSensorCategory())
+                .sensorMeta(sensorDTO.getSensorMeta())
                 .sensorApiKey(apiKey)
                 .build();
 
