@@ -41,10 +41,12 @@ public class SensorServiceImpl implements ISensorService{
 
         // Lista para almacenar todos los sensores
         List<SensorDTO> allSensors = new ArrayList<>();
+
         for (Location location : locations) {
             List<Sensor> locationSensors = sensorRepository.findByLocation(location);
-            System.out.println(location.getLocationId());
-            List<SensorDTO> locationSensorDTOs = locationSensors.stream()
+            System.out.println("Localidad encontrada: " + location.getLocationName());
+
+            locationSensors.stream()
                     .map(sensor -> SensorDTO.builder()
                             .sensorId(sensor.getSensorId())
                             .locationId(location.getLocationId())
@@ -52,13 +54,10 @@ public class SensorServiceImpl implements ISensorService{
                             .sensorCategory(sensor.getSensorCategory())
                             .sensorMeta(sensor.getSensorMeta())
                             .build())
-                    .toList();
-
-            // Agregar los DTOs a la lista principal
-            allSensors.addAll(locationSensorDTOs);
-            allSensors.stream().forEach(sensorDTO -> {
-                System.out.println(sensorDTO.getSensorName());
-            });
+                    .forEach(sensorDTO -> {
+                        System.out.println("Sensor encontrado: " + sensorDTO.getSensorName());
+                        allSensors.add(sensorDTO);
+                    });
 
         }
         return allSensors;
