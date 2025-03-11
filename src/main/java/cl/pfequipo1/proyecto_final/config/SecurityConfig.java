@@ -42,6 +42,8 @@ public class SecurityConfig {
        return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
+                    // Ruta de acceso a la documentacion
+                    auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll();
                     // Rutas públicas para visualizar compañías y localidades
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/locations/**").permitAll();
