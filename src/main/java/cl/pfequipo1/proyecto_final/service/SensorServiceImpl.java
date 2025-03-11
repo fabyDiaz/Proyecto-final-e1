@@ -63,7 +63,27 @@ public class SensorServiceImpl implements ISensorService{
 
     @Override
     public List<SensorDTO> findByLocation(Integer locationId, String companyApiKey) {
-        return List.of();
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
+
+        if (!location.getCompany().getCompanyApiKey().equals(companyApiKey)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        List<Sensor> sensors = sensorRepository.findByLocation(location);
+        List<SensorDTO> sensorDTOs = new ArrayList<>();
+
+        for (Sensor sensor : sensors) {
+            sensorDTOs.add(SensorDTO.builder()
+                    .sensorId(sensor.getSensorId())
+                    .locationId(sensor.getLocation().getLocationId())
+                    .sensorName(sensor.getSensorName())
+                    .sensorCategory(sensor.getSensorCategory())
+                    .sensorMeta(sensor.getSensorMeta())
+                    .build());
+        }
+
+        return sensorDTOs;
     }
 
     @Override
@@ -130,11 +150,36 @@ public class SensorServiceImpl implements ISensorService{
 
     @Override
     public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey, String adminUsername, String adminPassword) {
-        return null;
+        Sensor sensor = sensorRepository.findById(sensorId)
+                .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
+
+        if (!sensor.getLocation().getCompany().getCompanyApiKey().equals(companyApiKey)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        sensor.setSensorName(sensorDTO.getSensorName());
+        sensor.setSensorCategory(sensorDTO.getSensorCategory());
+        sensor.setSensorMeta(sensorDTO.getSensorMeta());
+        Sensor updatedSensor = sensorRepository.save(sensor);
+
+        return SensorDTO.builder()
+                .sensorId(updatedSensor.getSensorId())
+                .locationId(updatedSensor.getLocation().getLocationId())
+                .sensorName(updatedSensor.getSensorName())
+                .sensorCategory(updatedSensor.getSensorCategory())
+                .sensorMeta(updatedSensor.getSensorMeta())
+                .build();
     }
 
     @Override
     public void delete(Integer sensorId, String companyApiKey, String adminUsername, String adminPassword) {
+        Sensor sensor = sensorRepository.findById(sensorId)
+                .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
 
+        if (!sensor.getLocation().getCompany().getCompanyApiKey().equals(companyApiKey)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        sensorRepository.delete(sensor);
     }
 }
