@@ -68,7 +68,20 @@ public class SensorServiceImpl implements ISensorService{
 
     @Override
     public SensorDTO findById(Integer sensorId, String companyApiKey) {
-        return null;
+        Sensor sensor = sensorRepository.findById(sensorId)
+                .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
+
+        if (!sensor.getLocation().getCompany().getCompanyApiKey().equals(companyApiKey)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        return SensorDTO.builder()
+                .sensorId(sensor.getSensorId())
+                .locationId(sensor.getLocation().getLocationId())
+                .sensorName(sensor.getSensorName())
+                .sensorCategory(sensor.getSensorCategory())
+                .sensorMeta(sensor.getSensorMeta())
+                .build();
     }
 
     @Override
