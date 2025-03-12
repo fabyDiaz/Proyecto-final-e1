@@ -60,17 +60,50 @@ public class SensorController {
         return ResponseEntity.ok(sensors);
     }
 
+    @Operation(
+            summary = "Sensor según su Id",
+            description = "Muestra un Sensor según su Id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sensor encontrado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = SensorDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Sensor no encontrado")
+            }
+    )
+
     @GetMapping("/{sensorId}")
     public ResponseEntity<SensorDTO> getSensorById(@PathVariable Integer sensorId, @RequestHeader("company-api-key") String companyApiKey) {
         SensorDTO sensor = sensorService.findById(sensorId, companyApiKey);
         return ResponseEntity.ok(sensor);
     }
 
+    @Operation(
+            summary = "Sensor según su Locacion",
+            description = "Muestra un Sensor según su Locacion",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sensor encontrado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = SensorDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Sensor no encontrado")
+            }
+    )
+
     @GetMapping("/location/{locationId}")
     public ResponseEntity<List<SensorDTO>> getSensorsByLocation(@PathVariable Integer locationId, @RequestHeader("company-api-key") String companyApiKey) {
         List<SensorDTO> sensors = sensorService.findByLocation(locationId, companyApiKey);
         return ResponseEntity.ok(sensors);
     }
+
+    @Operation(
+            summary = "Actualiza un Sensor segun id",
+            description = "Actualiza un Sensor según su id siendo administrador",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Sensor actualizado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = SensorDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Sensor no actualizado")
+            }
+    )
 
     @PutMapping("/{sensorId}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -82,6 +115,17 @@ public class SensorController {
         return ResponseEntity.ok(updatedSensor);
     }
 
+    @Operation(
+            summary = "Elimina Sensor según su Id",
+            description = "Elimina un Sensor según su Id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sensor eliminada",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = SensorDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Sensor no eliminada")
+            }
+    )
+    
     @DeleteMapping("/{sensorId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteSensor(@PathVariable Integer sensorId,
