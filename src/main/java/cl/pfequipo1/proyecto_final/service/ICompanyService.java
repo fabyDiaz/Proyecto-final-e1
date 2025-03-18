@@ -1,6 +1,7 @@
 package cl.pfequipo1.proyecto_final.service;
 
 import cl.pfequipo1.proyecto_final.dto.AdminDTO;
+import cl.pfequipo1.proyecto_final.dto.CompanyAdminViewDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 
@@ -13,4 +14,6 @@ public interface ICompanyService {
     public CompanyDTO update(Integer id, CompanyRequestDTO companyRequestDTO);
     public void delete(Integer id);
     public CompanyDTO findById(Integer id);
+    public List<CompanyAdminViewDTO> getAllCompaniesForAdmin();
+    public CompanyAdminViewDTO getCompanyByIdForAdmin(Integer id);
 }

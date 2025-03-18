@@ -1,5 +1,6 @@
 package cl.pfequipo1.proyecto_final.controller;
 
+import cl.pfequipo1.proyecto_final.dto.CompanyAdminViewDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
@@ -110,7 +111,6 @@ public class CompanyController {
         companyService.delete(id);
         return ResponseEntity.ok("Compañía eliminada "+id);
     }
-
 
 }
 

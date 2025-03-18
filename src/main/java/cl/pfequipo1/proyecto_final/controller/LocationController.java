@@ -1,10 +1,6 @@
 package cl.pfequipo1.proyecto_final.controller;
 
-import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
-import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 import cl.pfequipo1.proyecto_final.dto.LocationDTO;
-import cl.pfequipo1.proyecto_final.entity.Location;
-import cl.pfequipo1.proyecto_final.repository.LocationRepository;
 import cl.pfequipo1.proyecto_final.service.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
