@@ -3,8 +3,6 @@ package cl.pfequipo1.proyecto_final.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "location")
 @Data

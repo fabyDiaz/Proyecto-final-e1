@@ -1,6 +1,5 @@
 package cl.pfequipo1.proyecto_final.repository;
 
-import cl.pfequipo1.proyecto_final.entity.Company;
 import cl.pfequipo1.proyecto_final.entity.Location;
 import cl.pfequipo1.proyecto_final.entity.Sensor;
 import org.springframework.data.jpa.repository.JpaRepository;
