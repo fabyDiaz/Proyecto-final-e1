@@ -1,12 +1,10 @@
 package cl.pfequipo1.proyecto_final.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -30,12 +30,6 @@ public class SecurityConfig {
     @Autowired
     private AdminUserDetailsService adminUserDetailsService;
 
-    /**
-     * Protege los endpoints de company
-     * @param httpSecurity
-     * @return
-     * @throws Exception
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -47,6 +41,9 @@ public class SecurityConfig {
                     // Rutas públicas para visualizar compañías y localidades
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/locations/**").permitAll();
+
+                    // Rutas NUEVAS específicas para admin que incluyen apiKey
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/admin/companies/**").hasRole("ADMIN");
 
                     // Rutas protegidas para modificaciones (POST, PUT, DELETE)
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/companies/**").hasRole("ADMIN");
