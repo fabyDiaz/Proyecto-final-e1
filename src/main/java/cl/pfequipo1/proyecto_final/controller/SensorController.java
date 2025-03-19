@@ -1,9 +1,6 @@
 package cl.pfequipo1.proyecto_final.controller;
 
-import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
-import cl.pfequipo1.proyecto_final.dto.LocationDTO;
 import cl.pfequipo1.proyecto_final.dto.SensorDTO;
-import cl.pfequipo1.proyecto_final.service.LocationServiceImpl;
 import cl.pfequipo1.proyecto_final.service.SensorServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
