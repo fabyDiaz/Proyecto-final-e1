@@ -28,8 +28,13 @@ public class LocationServiceImpl implements ILocationService{
         Company company = companyRepository.findByCompanyApiKey(companyApiKey)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
 
+        // Validar que los campos obligatorios del DTO no sean nulos
+        if (locationDTO.getLocationName() == null || locationDTO.getLocationName().isEmpty()) {
+            throw new IllegalArgumentException("Location name is required");
+        }
+
         // Crear la entidad Location
-        Location location = Location.builder()
+       Location location = Location.builder()
                 .locationName(locationDTO.getLocationName())
                 .locationCountry(locationDTO.getLocationCountry())
                 .locationCity(locationDTO.getLocationCity())
@@ -37,7 +42,9 @@ public class LocationServiceImpl implements ILocationService{
                 .company(company) // Asignar la compañía encontrada
                 .build();
 
+        System.out.println(location.getLocationId()+ " - " + location.getLocationName());
         Location savedLocation = locationRepository.save(location);
+
 
         // Convertir a DTO y devolver
         return LocationDTO.builder()
