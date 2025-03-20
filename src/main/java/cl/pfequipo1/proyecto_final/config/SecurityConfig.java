@@ -41,6 +41,8 @@ public class SecurityConfig {
                     // Rutas públicas para visualizar compañías y localidades
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/locations/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/sensor/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/sensor_data/**").permitAll();
 
                     // Rutas NUEVAS específicas para admin que incluyen apiKey
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/admin/companies/**").hasRole("ADMIN");
