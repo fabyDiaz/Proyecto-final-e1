@@ -53,7 +53,7 @@ public class AdminController {
     )
     @GetMapping("/companies")
     @PreAuthorize("hasRole('ADMIN')") // Asegúrate de tener configuración de seguridad
-    public ResponseEntity<List<CompanyAdminViewDTO>> getllCompaniesAdmin() {
+    public ResponseEntity<List<CompanyAdminViewDTO>> getAllCompaniesForAdmin() {
         return ResponseEntity.ok(companyService.getAllCompaniesForAdmin());
     }
 

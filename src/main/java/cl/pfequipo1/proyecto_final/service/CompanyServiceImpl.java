@@ -117,8 +117,8 @@ public class CompanyServiceImpl implements ICompanyService {
         companyRepository.delete(company);
     }
 
-    @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public List<CompanyAdminViewDTO> getAllCompaniesForAdmin() {
         List<Company> companies = companyRepository.findAll();
         return companies.stream()
@@ -130,8 +130,8 @@ public class CompanyServiceImpl implements ICompanyService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public CompanyAdminViewDTO getCompanyByIdForAdmin(Integer id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found with ID: " + id));
