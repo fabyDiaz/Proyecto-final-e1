@@ -27,5 +27,7 @@ public class SensorDTO {
 
     @Schema(description = "Meta de Sensor")
     private String sensorMeta;
-    // No incluimos sensorApiKey por seguridad
+
+    @Schema(description = "API Key de Sensor")
+    private String sensorApiKey;
 }
