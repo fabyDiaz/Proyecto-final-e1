@@ -51,6 +51,7 @@ public class SensorServiceImpl implements ISensorService{
                             .sensorName(sensor.getSensorName())
                             .sensorCategory(sensor.getSensorCategory())
                             .sensorMeta(sensor.getSensorMeta())
+                            .sensorApiKey(sensor.getSensorApiKey())
                             .build())
                     .forEach(sensorDTO -> {
                         System.out.println("Sensor encontrado: " + sensorDTO.getSensorName());
@@ -80,6 +81,7 @@ public class SensorServiceImpl implements ISensorService{
                     .sensorName(sensor.getSensorName())
                     .sensorCategory(sensor.getSensorCategory())
                     .sensorMeta(sensor.getSensorMeta())
+                    .sensorApiKey(sensor.getSensorApiKey())
                     .build());
         }
 
@@ -101,6 +103,7 @@ public class SensorServiceImpl implements ISensorService{
                 .sensorName(sensor.getSensorName())
                 .sensorCategory(sensor.getSensorCategory())
                 .sensorMeta(sensor.getSensorMeta())
+                .sensorApiKey(sensor.getSensorApiKey())
                 .build();
     }
 
@@ -133,6 +136,7 @@ public class SensorServiceImpl implements ISensorService{
                 .sensorName(savedSensor.getSensorName())
                 .sensorCategory(savedSensor.getSensorCategory())
                 .sensorMeta(savedSensor.getSensorMeta())
+                .sensorApiKey(savedSensor.getSensorApiKey())
                 .build();
     }
 

@@ -136,9 +136,6 @@ public class SensorDataServiceImpl implements ISensorDataService{
         return null;
     }
 
-
-
-
     @Override
     public List<SensorDataDTO> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds) {
         // Validar que la compañía existe con la API key proporcionada

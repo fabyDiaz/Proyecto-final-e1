@@ -2,9 +2,11 @@ package cl.pfequipo1.proyecto_final.controller;
 
 import cl.pfequipo1.proyecto_final.dto.AdminDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyAdminViewDTO;
+import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
 import cl.pfequipo1.proyecto_final.service.AdminServiceImpl;
 import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +72,13 @@ public class AdminController {
     @GetMapping("/companies/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyAdminViewDTO> findCompanyByIdAdmin(@PathVariable Integer id) {
-        return ResponseEntity.ok(companyService.getCompanyByIdForAdmin(id));
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(companyService.getCompanyByIdForAdmin(id));
+        } catch (Exception e) {
+            CompanyAdminViewDTO companyAdminViewDTO = new CompanyAdminViewDTO();
+            companyAdminViewDTO.setCompanyName("No existe compañía");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(companyAdminViewDTO);
+        }
     }
 
 }

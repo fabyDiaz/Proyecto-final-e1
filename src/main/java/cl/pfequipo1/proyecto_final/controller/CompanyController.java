@@ -1,9 +1,10 @@
 package cl.pfequipo1.proyecto_final.controller;
 
-import cl.pfequipo1.proyecto_final.dto.CompanyAdminViewDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/companies")
 public class CompanyController {
+
+    Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
     @Autowired
     private CompanyServiceImpl companyService;
@@ -36,6 +41,7 @@ public class CompanyController {
 
     @GetMapping
     public List<CompanyDTO> getAllCompanies() {
+        logger.info("Getting all Companies From Company Controller");
         return companyService.findAll();
     }
 
@@ -52,8 +58,14 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDTO> findById(@PathVariable Integer id) {
-        CompanyDTO companyDTO = companyService.findById(id);
-        return ResponseEntity.ok(companyDTO);
+        logger.info("Getting All Companies for id {} From Company Controller", id);
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(companyService.findById(id));
+        } catch (Exception e){
+            CompanyDTO companyDTO = new CompanyDTO();
+            companyDTO.setCompanyName("No existe compañía");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(companyDTO);
+        }
     }
 
     @Operation(
@@ -70,13 +82,14 @@ public class CompanyController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyDTO> create(@RequestBody CompanyRequestDTO companyRequestDTO) {
+        logger.info("Posting All Companies for request {} From Company Controller", companyRequestDTO);
         CompanyDTO createdCompany = companyService.create(companyRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCompany);
     }
 
     @Operation(
-            summary = "Actualiza una Compañia",
-            description = "Actualiza una Compañia segun el rol del Usuario",
+            summary = "Actualiza una Compañía",
+            description = "Actualiza una Compañía según el rol del Usuario",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Compañia Actualizada",
                             content = @Content(mediaType = "application/json",
@@ -88,9 +101,16 @@ public class CompanyController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyDTO> updateCompany(@PathVariable Integer id, @RequestBody CompanyRequestDTO companyRequestDTO) {
+        logger.info("Putting All Companies for request {} From Company Controller", companyRequestDTO);
 
-        CompanyDTO updatedCompany = companyService.update(id, companyRequestDTO);
-        return ResponseEntity.ok(updatedCompany);
+        try{
+            CompanyDTO updatedCompany = companyService.update(id, companyRequestDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedCompany);
+        } catch (Exception e){
+            CompanyDTO companyDTO = new CompanyDTO();
+            companyDTO.setCompanyName("No existe compañía a actualizar");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(companyDTO);
+        }
     }
 
     @Operation(
@@ -107,8 +127,13 @@ public class CompanyController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
-        companyService.delete(id);
-        return ResponseEntity.ok("Compañía eliminada "+id);
+        logger.info("Deleting all Companies for id {} From Company Controller", id);
+        try{
+            companyService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Se elimina la compañía con el ID: " + id);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe compañía a Eliminar");
+        }
     }
 
 }
