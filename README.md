@@ -16,7 +16,6 @@ Este proyecto consiste en el desarrollo de una **API REST** en Java para una pla
 - **JPA / Hibernate**
 - **Maven**
 - **Swagger / OpenAPI**
-- **Docker (opcional)**
 - **Postman (para pruebas)**
 
 ---
@@ -142,6 +141,6 @@ Acceso local: [http://localhost:8080](http://localhost:8080)
 ## 🧑‍💻 Autor / Equipo
 
 > Proyecto desarrollado por el grupo **Equipo 1**, cohorte Backend Java Developer 2024–2025  
-> Contacto: [carlos.garcia@talentofuturo.com](mailto:carlos.garcia@talentofuturo.com)
+
 
 ---
