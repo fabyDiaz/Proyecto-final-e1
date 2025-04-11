@@ -153,7 +153,7 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey, String adminUsername, String adminPassword) {
+    public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey) {
         Sensor sensor = sensorRepository.findById(sensorId)
                 .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
 
@@ -176,7 +176,7 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public void delete(Integer sensorId, String companyApiKey, String adminUsername, String adminPassword) {
+    public void delete(Integer sensorId, String companyApiKey) {
         Sensor sensor = sensorRepository.findById(sensorId)
                 .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
 

@@ -119,15 +119,13 @@ public class SensorController {
 
     @PutMapping("/{sensorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SensorDTO> updateSensor(@PathVariable Integer sensorId, @RequestBody SensorDTO sensorDTO,
-                                                  @RequestHeader("company-api-key") String companyApiKey,
-                                                  @RequestHeader("admin-username") String adminUsername,
-                                                  @RequestHeader("admin-password") String adminPassword) {
+    public ResponseEntity<?> updateSensor(@PathVariable Integer sensorId, @RequestBody SensorDTO sensorDTO,
+                                                  @RequestHeader("company-api-key") String companyApiKey) {
         try{
-            SensorDTO updatedSensor = sensorService.update(sensorId, sensorDTO, companyApiKey, adminUsername, adminPassword);
+            SensorDTO updatedSensor = sensorService.update(sensorId, sensorDTO, companyApiKey);
             return ResponseEntity.status(HttpStatus.OK).body(updatedSensor);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SensorDTO());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sensor no actualizado o API Key Erróneo");
         }
 
     }
@@ -146,14 +144,12 @@ public class SensorController {
     @DeleteMapping("/{sensorId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteSensor(@PathVariable Integer sensorId,
-                                             @RequestHeader("company-api-key") String companyApiKey,
-                                             @RequestHeader("admin-username") String adminUsername,
-                                             @RequestHeader("admin-password") String adminPassword) {
+                                             @RequestHeader("company-api-key") String companyApiKey) {
         try {
-            sensorService.delete(sensorId, companyApiKey, adminUsername, adminPassword);
+            sensorService.delete(sensorId, companyApiKey);
             return ResponseEntity.status(HttpStatus.OK).body("Sensor Eliminado");
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el Sensor");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el Sensor o API Key Erróneo");
         }
 
     }

@@ -83,6 +83,23 @@ public class LocationServiceImpl implements ILocationService{
     }
 
     @Override
+    public List<LocationDTO> findAll() {
+
+        List<Location> locations = locationRepository.findAll();
+
+        return locations.stream()
+                .map(location -> LocationDTO.builder()
+                        .locationId(location.getLocationId())
+                        .locationName(location.getLocationName())
+                        .locationCountry(location.getLocationCountry())
+                        .locationCity(location.getLocationCity())
+                        .locationMeta(location.getLocationMeta())
+                        .companyId(location.getCompany().getId())
+                        .build())
+                .toList();
+    }
+
+    @Override
     public LocationDTO findById(Integer id, String companyApiKey) {
         // Buscar la compañía por ID o lanzar excepción si no existe
         Location location = locationRepository.findById(id)

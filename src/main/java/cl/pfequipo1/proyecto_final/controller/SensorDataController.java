@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/sensor_data")
 public class SensorDataController {
+
     @Autowired
     private SensorDataServiceImpl sensorDataService;
 
