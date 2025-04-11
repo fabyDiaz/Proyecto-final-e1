@@ -1,4 +1,3 @@
-
 # 🛰️ Proyecto Final - API IoT Backend (Java + Spring Boot)
 
 ## 📌 Descripción General
@@ -9,29 +8,50 @@ Este proyecto consiste en el desarrollo de una **API REST** en Java para una pla
 
 ## 🚀 Tecnologías Utilizadas
 
-- **Java 17**
-- **Spring Boot**
+- **Java 21**
+- **Spring Boot 3.4.2**
 - **Spring Security (roles & JWT)**
 - **PostgreSQL** (base de datos relacional)
-- **JPA / Hibernate**
+- **Spring Data JPA / Hibernate**
 - **Maven**
-- **Swagger / OpenAPI**
+- **Swagger / SpringDoc OpenAPI**
 - **Postman (para pruebas)**
 
 ---
 
-## 🧱 Estructura del Modelo de Datos
+## 🧱 Modelo Entidad - Relación
 
-```txt
-Admin (rol)
- └── Company
-       └── Location
-             └── Sensor
-                   └── Sensor Data (variable -> valor)
-```
+El sistema se compone de las siguientes entidades y relaciones:
 
-- Cada compañía se identifica con una `company_api_key`.
-- Cada sensor se identifica con una `sensor_api_key`.
+### 🔹 Admin
+- `user_name`: nombre de usuario
+- `password`: contraseña encriptada
+
+### 🔹 Company
+- `id`: identificador único
+- `company_name`: nombre de la empresa
+- `company_api_key`: clave única para autenticación en consultas
+
+### 🔹 Location
+- `location_id`: identificador único
+- `company_id`: referencia a la compañía
+- `location_name`: nombre del lugar
+- `location_country`, `location_city`: ubicación geográfica
+- `location_meta`: datos adicionales
+
+### 🔹 Sensor
+- `sensor_id`: identificador único
+- `location_id`: referencia a la ubicación
+- `sensor_name`: nombre
+- `sensor_category`: tipo o clase del sensor
+- `sensor_meta`: descripción
+- `sensor_api_key`: clave de autenticación del dispositivo
+
+### 🔹 Sensor Data
+- `id`: identificador de la medición
+- `sensor_id`: referencia al sensor
+- `time_stamp`: marca de tiempo (EPOCH)
+- `temperature`, `humidity`, `voltage`: valores capturados
 
 ---
 
@@ -72,9 +92,9 @@ Admin (rol)
 ## 🛡️ Seguridad
 
 - Roles: `ADMIN` y usuarios autenticados.
-- Seguridad basada en JWT.
+- Seguridad basada en JWT (configurable con Spring Security).
 - Protección por `@PreAuthorize` en endpoints sensibles.
-- Acceso a datos por API keys.
+- Acceso a datos mediante API keys (`company_api_key`, `sensor_api_key`).
 
 ---
 
@@ -87,25 +107,21 @@ cd iot-api-backend
 ```
 
 ### 2. Configurar base de datos
-Editar `application.properties`:
+Editar `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/iotdb
 spring.datasource.username=postgres
 spring.datasource.password=tu_clave
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-### 3. Crear base de datos
-Usar script SQL:
-```bash
-psql -U postgres -d iotdb -f schema.sql
-```
-
-### 4. Ejecutar el proyecto
+### 3. Ejecutar el proyecto
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Acceso local: [http://localhost:8080](http://localhost:8080)
+Acceso local: [http://localhost:8080](http://localhost:8080)  
+Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 
@@ -134,13 +150,12 @@ Acceso local: [http://localhost:8080](http://localhost:8080)
 
 - Este proyecto es parte del **programa Backend Java Developer (2024–2025)**.
 - Desarrollado como parte del módulo final de integración.
-- Compatible con despliegue en AWS EC2 o servicios como Railway, Render o Heroku.
+- Compatible con despliegue en AWS EC2, Railway, Render o Heroku.
 
 ---
 
 ## 🧑‍💻 Autor / Equipo
 
 > Proyecto desarrollado por el grupo **Equipo 1**, cohorte Backend Java Developer 2024–2025  
-
 
 ---
