@@ -47,6 +47,12 @@ public class CompanyServiceImpl implements ICompanyService {
     @PreAuthorize("hasRole('ADMIN')")
     public CompanyDTO create(CompanyRequestDTO companyRequestDTO) {
 
+        Company existingCompany = companyRepository.findByCompanyName(companyRequestDTO.getCompanyName());
+        if (existingCompany != null) {
+            // Si ya existe, puedes devolver null o lanzar una RuntimeException estándar
+            throw new IllegalArgumentException("Ya existe una compañía con el nombre: " + companyRequestDTO.getCompanyName());
+        }
+
         // Generar una API key única
         String apiKey = generateUniqueApiKey();
 

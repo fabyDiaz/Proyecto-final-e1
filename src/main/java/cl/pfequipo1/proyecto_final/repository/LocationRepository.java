@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Integer> {
     List<Location> findByCompany(Company company);
+    boolean existsByLocationNameAndCompanyId(String locationName, Integer companyId);
 }
