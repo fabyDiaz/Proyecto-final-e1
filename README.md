@@ -24,7 +24,7 @@ Este proyecto consiste en el desarrollo de una **API REST** en Java para una pla
 El sistema se compone de las siguientes entidades y relaciones:
 
 ### 🔹 Admin
-- `user_name`: nombre de usuario
+- `username`: nombre de usuario
 - `password`: contraseña encriptada
 
 ### 🔹 Company
