@@ -35,8 +35,13 @@ public class SensorController {
     @PostMapping
     public ResponseEntity<SensorDTO> createSensor(@RequestBody SensorDTO sensor, @RequestHeader("company-api-key") String companyApiKey) {
 
-        SensorDTO createdSensor = sensorService.create(sensor, companyApiKey);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSensor);
+        try{
+            SensorDTO createdSensor = sensorService.create(sensor, companyApiKey);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdSensor);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SensorDTO());
+        }
+
     }
 
     @Operation(
@@ -70,8 +75,13 @@ public class SensorController {
 
     @GetMapping("/{sensorId}")
     public ResponseEntity<SensorDTO> getSensorById(@PathVariable Integer sensorId, @RequestHeader("company-api-key") String companyApiKey) {
-        SensorDTO sensor = sensorService.findById(sensorId, companyApiKey);
-        return ResponseEntity.ok(sensor);
+        try{
+            SensorDTO sensor = sensorService.findById(sensorId, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body(sensor);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SensorDTO());
+        }
+
     }
 
     @Operation(
@@ -87,8 +97,13 @@ public class SensorController {
 
     @GetMapping("/location/{locationId}")
     public ResponseEntity<List<SensorDTO>> getSensorsByLocation(@PathVariable Integer locationId, @RequestHeader("company-api-key") String companyApiKey) {
-        List<SensorDTO> sensors = sensorService.findByLocation(locationId, companyApiKey);
-        return ResponseEntity.ok(sensors);
+        try{
+            List<SensorDTO> sensors = sensorService.findByLocation(locationId, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body(sensors);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
     }
 
     @Operation(
@@ -108,8 +123,13 @@ public class SensorController {
                                                   @RequestHeader("company-api-key") String companyApiKey,
                                                   @RequestHeader("admin-username") String adminUsername,
                                                   @RequestHeader("admin-password") String adminPassword) {
-        SensorDTO updatedSensor = sensorService.update(sensorId, sensorDTO, companyApiKey, adminUsername, adminPassword);
-        return ResponseEntity.ok(updatedSensor);
+        try{
+            SensorDTO updatedSensor = sensorService.update(sensorId, sensorDTO, companyApiKey, adminUsername, adminPassword);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedSensor);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SensorDTO());
+        }
+
     }
 
     @Operation(
@@ -125,12 +145,17 @@ public class SensorController {
     
     @DeleteMapping("/{sensorId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteSensor(@PathVariable Integer sensorId,
+    public ResponseEntity<String> deleteSensor(@PathVariable Integer sensorId,
                                              @RequestHeader("company-api-key") String companyApiKey,
                                              @RequestHeader("admin-username") String adminUsername,
                                              @RequestHeader("admin-password") String adminPassword) {
-        sensorService.delete(sensorId, companyApiKey, adminUsername, adminPassword);
-        return ResponseEntity.ok().build();
+        try {
+            sensorService.delete(sensorId, companyApiKey, adminUsername, adminPassword);
+            return ResponseEntity.status(HttpStatus.OK).body("Sensor Eliminado");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el Sensor");
+        }
+
     }
 
 }

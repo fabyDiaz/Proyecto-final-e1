@@ -33,8 +33,13 @@ public class SensorDataController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<SensorDataDTO>> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
-        List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
-        return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+        try{
+            List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedData);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
     }
 
     @Operation(
@@ -63,7 +68,13 @@ public class SensorDataController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
-        return ResponseEntity.ok(sensorData);
+        try{
+            List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
+            return ResponseEntity.status(HttpStatus.OK).body(sensorData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+
     }
 }

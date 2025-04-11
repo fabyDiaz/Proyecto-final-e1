@@ -35,8 +35,14 @@ public class LocationController {
     @PostMapping
     public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
 
-        LocationDTO createdLocation = locationService.create(locationDTO, companyApiKey);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
+        try{
+            LocationDTO createdLocation = locationService.create(locationDTO, companyApiKey);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
+        } catch (Exception e) {
+            LocationDTO location = new LocationDTO();
+            location.setLocationName("No existe una Locacion");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(location);
+        }
     }
 
     @Operation(
@@ -53,8 +59,8 @@ public class LocationController {
     @GetMapping
     public ResponseEntity<List<LocationDTO>> getAllLocations(@RequestHeader("company-api-key") String companyApiKey) {
 
-        List<LocationDTO> locations = locationService.findAll(companyApiKey);
-        return ResponseEntity.ok(locations);
+            List<LocationDTO> locations = locationService.findAll(companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body(locations);
     }
 
     @Operation(
@@ -70,8 +76,13 @@ public class LocationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LocationDTO> findById(@PathVariable Integer id, @RequestHeader("company-api-key") String companyApiKey) {
-        LocationDTO locationDTO = locationService.findById(id, companyApiKey);
-        return ResponseEntity.ok(locationDTO);
+        try{
+            LocationDTO locationDTO = locationService.findById(id, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body(locationDTO);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LocationDTO());
+        }
+
     }
 
     @Operation(
@@ -88,8 +99,13 @@ public class LocationController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Integer id,@RequestHeader("company-api-key") String companyApiKey) {
-        locationService.delete(id, companyApiKey);
-        return ResponseEntity.ok("Compañía eliminada "+id);
+        try{
+            locationService.delete(id, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body("Locacion eliminada");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe Locacion");
+        }
+
     }
 
     @Operation(
@@ -107,8 +123,13 @@ public class LocationController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LocationDTO> updateLocation(@PathVariable Integer id, @RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
 
-        LocationDTO updatedLocation = locationService.update(id, locationDTO, companyApiKey );
-        return ResponseEntity.ok(updatedLocation);
+        try{
+            LocationDTO updatedLocation = locationService.update(id, locationDTO, companyApiKey );
+            return ResponseEntity.status(HttpStatus.OK).body(updatedLocation);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LocationDTO());
+        }
+
     }
 }
 
