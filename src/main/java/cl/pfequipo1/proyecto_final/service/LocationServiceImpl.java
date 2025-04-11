@@ -33,6 +33,11 @@ public class LocationServiceImpl implements ILocationService{
             throw new IllegalArgumentException("Location name is required");
         }
 
+        // Verificar si ya existe una ubicación con el mismo nombre en la misma compañía
+        if (locationRepository.existsByLocationNameAndCompanyId(locationDTO.getLocationName(), company.getId())) {
+            throw new IllegalArgumentException("Ya existe una ubicación con el nombre: " + locationDTO.getLocationName() + " en esta compañía");
+        }
+
         // Crear la entidad Location
        Location location = Location.builder()
                 .locationName(locationDTO.getLocationName())
