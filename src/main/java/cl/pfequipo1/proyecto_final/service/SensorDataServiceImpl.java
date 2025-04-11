@@ -76,7 +76,7 @@ public class SensorDataServiceImpl implements ISensorDataService{
                 .toList();
     }
 
-    // Método auxiliar para procesar el formato de JSON enviado por los sensores
+    // Metodo auxiliar para procesar el formato de JSON enviado por los sensores
     public List<SensorDataDTO> processSensorDataRequest(SensorDataRequestDTO requestDTO) {
         String sensorApiKey = requestDTO.getApi_key();
         List<Map<String, Object>> jsonDataList = requestDTO.getJson_data();
