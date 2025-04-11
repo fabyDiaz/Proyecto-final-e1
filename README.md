@@ -148,9 +148,7 @@ Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagge
 
 ## 📍 Notas adicionales
 
-- Este proyecto es parte del **programa Backend Java Developer (2024–2025)**.
-- Desarrollado como parte del módulo final de integración.
-- Compatible con despliegue en AWS EC2, Railway, Render o Heroku.
+
 
 ---
 
