@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+/*
 @Component
 @Profile("kafka")
 public class KafkaConsumerSensor implements CommandLineRunner {
@@ -182,11 +182,12 @@ public class KafkaConsumerSensor implements CommandLineRunner {
         }
     }
 
-    /**
+ */   /**
      * Cierra el consumidor de Kafka de manera segura
      */
-    public void close() {
+/*    public void close() {
         closed.set(true);
         consumer.wakeup();
     }
 }
+*/

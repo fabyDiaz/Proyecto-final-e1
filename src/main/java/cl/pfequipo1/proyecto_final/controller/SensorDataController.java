@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/sensor_data")
@@ -30,11 +31,22 @@ public class SensorDataController {
                     @ApiResponse(responseCode = "400", description = "Datos inválidos")
             }
     )
-    @PostMapping
+   /* @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<SensorDataDTO>> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
         List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
         return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+    }*/
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
+        try {
+            List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
+            return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            System.err.println("Error al guardar sensor data: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @Operation(
