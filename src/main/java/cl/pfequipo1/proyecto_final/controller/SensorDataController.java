@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/sensor_data")
@@ -33,14 +34,14 @@ public class SensorDataController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<SensorDataDTO>> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
-        try{
+    public ResponseEntity<?> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
+        try {
             List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedData);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            System.err.println("Error al guardar sensor data: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
         }
-
     }
 
     @Operation(

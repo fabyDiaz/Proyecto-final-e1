@@ -177,12 +177,11 @@ public class SensorServiceImpl implements ISensorService{
 
     @Override
     public void delete(Integer sensorId, String companyApiKey) {
-        Sensor sensor = sensorRepository.findById(sensorId)
-                .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
+        Company company = companyRepository.findByCompanyApiKey(companyApiKey)
+                .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
 
-        if (!sensor.getLocation().getCompany().getCompanyApiKey().equals(companyApiKey)) {
-            throw new RuntimeException("Unauthorized access");
-        }
+        Sensor sensor = sensorRepository.findBySensorIdAndLocation_Company(sensorId, company)
+                .orElseThrow(() -> new SecurityException("Sensor does not belong to the authenticated company"));
 
         sensorRepository.delete(sensor);
     }

@@ -121,15 +121,14 @@ public class LocationServiceImpl implements ILocationService{
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(Integer id, String companyApiKey) {
+    public void delete(Integer locationId, String companyApiKey) {
 
         Company company = companyRepository.findByCompanyApiKey(companyApiKey)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
-        // Verificar si la compañía existe
-        Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Company not found with ID: " + id));
 
-        // Eliminar la compañía
+        Location location = locationRepository.findByLocationIdAndCompany(locationId, company)
+                .orElseThrow(() -> new SecurityException("Location does not belong to the authenticated company"));
+
         locationRepository.delete(location);
     }
 

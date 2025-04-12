@@ -102,10 +102,10 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> delete(@PathVariable Integer id,@RequestHeader("company-api-key") String companyApiKey) {
+    public ResponseEntity<String> delete(@PathVariable Integer locationId,@RequestHeader("company-api-key") String companyApiKey) {
         try{
             //Validar companyapikey con location
-            locationService.delete(id, companyApiKey);
+            locationService.delete(locationId, companyApiKey);
             return ResponseEntity.status(HttpStatus.OK).body("Locacion eliminada");
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe Locacion o API Key erróneo");
