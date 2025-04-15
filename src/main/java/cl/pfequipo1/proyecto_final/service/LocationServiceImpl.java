@@ -83,6 +83,23 @@ public class LocationServiceImpl implements ILocationService{
     }
 
     @Override
+    public List<LocationDTO> findAll() {
+
+        List<Location> locations = locationRepository.findAll();
+
+        return locations.stream()
+                .map(location -> LocationDTO.builder()
+                        .locationId(location.getLocationId())
+                        .locationName(location.getLocationName())
+                        .locationCountry(location.getLocationCountry())
+                        .locationCity(location.getLocationCity())
+                        .locationMeta(location.getLocationMeta())
+                        .companyId(location.getCompany().getId())
+                        .build())
+                .toList();
+    }
+
+    @Override
     public LocationDTO findById(Integer id, String companyApiKey) {
         // Buscar la compañía por ID o lanzar excepción si no existe
         Location location = locationRepository.findById(id)
@@ -104,15 +121,14 @@ public class LocationServiceImpl implements ILocationService{
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(Integer id, String companyApiKey) {
+    public void delete(Integer locationId, String companyApiKey) {
 
         Company company = companyRepository.findByCompanyApiKey(companyApiKey)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
-        // Verificar si la compañía existe
-        Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Company not found with ID: " + id));
 
-        // Eliminar la compañía
+        Location location = locationRepository.findByLocationIdAndCompany(locationId, company)
+                .orElseThrow(() -> new SecurityException("Location does not belong to the authenticated company"));
+
         locationRepository.delete(location);
     }
 

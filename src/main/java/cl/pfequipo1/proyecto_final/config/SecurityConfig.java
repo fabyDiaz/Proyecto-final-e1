@@ -52,6 +52,14 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/locations/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/locations/**").hasRole("ADMIN");
 
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/sensor/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/sensor/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/sensor/**").hasRole("ADMIN");
+
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/sensor_data/**").permitAll();
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/sensor_data/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/sensor_data/**").hasRole("ADMIN");
+
                     // Cualquier otra ruta debe estar autenticada
                     auth.anyRequest().authenticated();
 
@@ -78,12 +86,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
-   /* @Bean
-    public UserDetailsService userDetailsService(){
-        return (UserDetailsService) User.withUsername("Fabiola").password("123").roles("ADMIN").authorities("READ","CREATE").build();
-    }
-    */
-
 
 }

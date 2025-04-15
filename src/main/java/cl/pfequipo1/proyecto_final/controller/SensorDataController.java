@@ -13,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/sensor_data")
 public class SensorDataController {
+
     @Autowired
     private SensorDataServiceImpl sensorDataService;
 
@@ -32,9 +34,14 @@ public class SensorDataController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<SensorDataDTO>> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
-        List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
-        return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+    public ResponseEntity<?> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
+        try {
+            List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
+            return new ResponseEntity<>(savedData, HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            System.err.println("Error al guardar sensor data: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @Operation(
@@ -63,7 +70,13 @@ public class SensorDataController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
-        return ResponseEntity.ok(sensorData);
+        try{
+            List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
+            return ResponseEntity.status(HttpStatus.OK).body(sensorData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+
     }
 }
