@@ -153,7 +153,7 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey, String adminUsername, String adminPassword) {
+    public SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey) {
         Sensor sensor = sensorRepository.findById(sensorId)
                 .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
 
@@ -176,13 +176,12 @@ public class SensorServiceImpl implements ISensorService{
     }
 
     @Override
-    public void delete(Integer sensorId, String companyApiKey, String adminUsername, String adminPassword) {
-        Sensor sensor = sensorRepository.findById(sensorId)
-                .orElseThrow(() -> new EntityNotFoundException("Sensor not found"));
+    public void delete(Integer sensorId, String companyApiKey) {
+        Company company = companyRepository.findByCompanyApiKey(companyApiKey)
+                .orElseThrow(() -> new EntityNotFoundException("Invalid company API key"));
 
-        if (!sensor.getLocation().getCompany().getCompanyApiKey().equals(companyApiKey)) {
-            throw new RuntimeException("Unauthorized access");
-        }
+        Sensor sensor = sensorRepository.findBySensorIdAndLocation_Company(sensorId, company)
+                .orElseThrow(() -> new SecurityException("Sensor does not belong to the authenticated company"));
 
         sensorRepository.delete(sensor);
     }

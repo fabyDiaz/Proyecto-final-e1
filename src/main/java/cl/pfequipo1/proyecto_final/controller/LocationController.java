@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import java.util.List;
 
 @RestController
@@ -35,8 +34,14 @@ public class LocationController {
     @PostMapping
     public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
 
-        LocationDTO createdLocation = locationService.create(locationDTO, companyApiKey);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
+        try{
+            LocationDTO createdLocation = locationService.create(locationDTO, companyApiKey);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
+        } catch (Exception e) {
+            LocationDTO location = new LocationDTO();
+            location.setLocationName("No existe una Locacion o API Key erróneo");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(location);
+        }
     }
 
     @Operation(
@@ -51,10 +56,15 @@ public class LocationController {
     )
 
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> getAllLocations(@RequestHeader("company-api-key") String companyApiKey) {
+    //public ResponseEntity<?> getAllLocations(@RequestHeader("company-api-key") String companyApiKey) {
+    public ResponseEntity<?> getAllLocations() {
 
-        List<LocationDTO> locations = locationService.findAll(companyApiKey);
-        return ResponseEntity.ok(locations);
+        try{
+            List<LocationDTO> locations = locationService.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(locations);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("API Key erróneo");
+        }
     }
 
     @Operation(
@@ -69,9 +79,14 @@ public class LocationController {
     )
 
     @GetMapping("/{id}")
-    public ResponseEntity<LocationDTO> findById(@PathVariable Integer id, @RequestHeader("company-api-key") String companyApiKey) {
-        LocationDTO locationDTO = locationService.findById(id, companyApiKey);
-        return ResponseEntity.ok(locationDTO);
+    public ResponseEntity<?> findById(@PathVariable Integer id, @RequestHeader("company-api-key") String companyApiKey) {
+        try{
+            LocationDTO locationDTO = locationService.findById(id, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body(locationDTO);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe una Locacion o API Key erróneo");
+        }
+
     }
 
     @Operation(
@@ -87,9 +102,15 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> delete(@PathVariable Integer id,@RequestHeader("company-api-key") String companyApiKey) {
-        locationService.delete(id, companyApiKey);
-        return ResponseEntity.ok("Compañía eliminada "+id);
+    public ResponseEntity<String> delete(@PathVariable Integer locationId,@RequestHeader("company-api-key") String companyApiKey) {
+        try{
+            //Validar companyapikey con location
+            locationService.delete(locationId, companyApiKey);
+            return ResponseEntity.status(HttpStatus.OK).body("Locacion eliminada");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe Locacion o API Key erróneo");
+        }
+
     }
 
     @Operation(
@@ -105,10 +126,15 @@ public class LocationController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<LocationDTO> updateLocation(@PathVariable Integer id, @RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
+    public ResponseEntity<?> updateLocation(@PathVariable Integer id, @RequestBody LocationDTO locationDTO, @RequestHeader("company-api-key") String companyApiKey) {
 
-        LocationDTO updatedLocation = locationService.update(id, locationDTO, companyApiKey );
-        return ResponseEntity.ok(updatedLocation);
+        try{
+            LocationDTO updatedLocation = locationService.update(id, locationDTO, companyApiKey );
+            return ResponseEntity.status(HttpStatus.OK).body(updatedLocation);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Locacion no actualizada o API Key erróneo");
+        }
+
     }
 }
 

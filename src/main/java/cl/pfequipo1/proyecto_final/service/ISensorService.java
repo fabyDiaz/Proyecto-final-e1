@@ -9,7 +9,7 @@ public interface ISensorService {
     List<SensorDTO> findByLocation(Integer locationId, String companyApiKey);
     SensorDTO findById(Integer sensorId, String companyApiKey);
     SensorDTO create(SensorDTO sensorDTO, String companyApiKey);
-    SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey, String adminUsername, String adminPassword);
-    void delete(Integer sensorId, String companyApiKey, String adminUsername, String adminPassword);
+    SensorDTO update(Integer sensorId, SensorDTO sensorDTO, String companyApiKey);
+    void delete(Integer sensorId, String companyApiKey);
 
 }

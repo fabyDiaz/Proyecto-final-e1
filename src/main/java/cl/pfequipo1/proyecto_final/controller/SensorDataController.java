@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/sensor_data")
 public class SensorDataController {
+
     @Autowired
     private SensorDataServiceImpl sensorDataService;
 
@@ -31,12 +32,6 @@ public class SensorDataController {
                     @ApiResponse(responseCode = "400", description = "Datos inválidos")
             }
     )
-   /* @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<SensorDataDTO>> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
-        List<SensorDataDTO> savedData = sensorDataService.processSensorDataRequest(requestDTO);
-        return new ResponseEntity<>(savedData, HttpStatus.CREATED);
-    }*/
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> saveSensorData(@RequestBody SensorDataRequestDTO requestDTO) {
@@ -75,7 +70,13 @@ public class SensorDataController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
-        return ResponseEntity.ok(sensorData);
+        try{
+            List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
+            return ResponseEntity.status(HttpStatus.OK).body(sensorData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+
     }
 }
