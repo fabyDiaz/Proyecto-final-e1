@@ -10,14 +10,13 @@ import cl.pfequipo1.proyecto_final.repository.CompanyRepository;
 import cl.pfequipo1.proyecto_final.repository.LocationRepository;
 import cl.pfequipo1.proyecto_final.repository.SensorDataRepository;
 import cl.pfequipo1.proyecto_final.repository.SensorRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SensorDataServiceImpl implements ISensorDataService{
@@ -53,8 +52,7 @@ public class SensorDataServiceImpl implements ISensorDataService{
             SensorData sensorData = SensorData.builder()
                     .id(dataDTO.getId())
                     .timeStamp(dataDTO.getTimeStamp())
-                    .temperature(dataDTO.getTemperature())
-                    .voltage(dataDTO.getVoltage())
+                    .reading(dataDTO.getReading())
                     .sensor(sensor)
                     .build();
 
@@ -69,8 +67,7 @@ public class SensorDataServiceImpl implements ISensorDataService{
                 .map(data -> SensorDataDTO.builder()
                         .id(data.getId())
                         .timeStamp(data.getTimeStamp())
-                        .temperature(data.getTemperature())
-                        .voltage(data.getVoltage())
+                        .reading(data.getReading())
                         .sensorId(data.getSensor().getSensorId())
                         .build())
                 .toList();
@@ -86,33 +83,39 @@ public class SensorDataServiceImpl implements ISensorDataService{
 
         List<SensorDataDTO> sensorDataList = new ArrayList<>();
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
         for (Map<String, Object> jsonData : jsonDataList) {
             SensorDataDTO dataDTO = SensorDataDTO.builder()
                     .id(UUID.randomUUID().toString())
                     .sensorId(sensor.getSensorId())
                     .build();
-
+            Integer timestamp = null;
             // Extraer valores de jsonData y mapearlos al DTO
             // Asumimos que los nombres de las propiedades pueden variar según el sensor
             if (jsonData.containsKey("timestamp")) {
-                dataDTO.setTimeStamp(convertToInteger(jsonData.get("timestamp")));
+                timestamp = convertToInteger(jsonData.get("timestamp"));
             } else if (jsonData.containsKey("time")) {
-                dataDTO.setTimeStamp(convertToInteger(jsonData.get("time")));
+                timestamp = convertToInteger(jsonData.get("time"));
             }
 
-            if (jsonData.containsKey("temperature") || jsonData.containsKey("temp")) {
-                dataDTO.setTemperature(convertToFloat(
-                        jsonData.containsKey("temperature") ?
-                                jsonData.get("temperature") : jsonData.get("temp")));
-            }
+            try {
+                // Convertir el mapa completo a una cadena JSON
+                String jsonReading = objectMapper.writeValueAsString(jsonData);
 
-            if (jsonData.containsKey("voltage") || jsonData.containsKey("volt")) {
-                dataDTO.setVoltage(convertToFloat(
-                        jsonData.containsKey("voltage") ?
-                                jsonData.get("voltage") : jsonData.get("volt")));
-            }
+                // Crear el DTO con el JSON completo
+                SensorDataDTO dataDTO1 = SensorDataDTO.builder()
+                        .id(UUID.randomUUID().toString())
+                        .sensorId(sensor.getSensorId())
+                        .timeStamp(timestamp)
+                        .reading(jsonReading)  // Guardar el JSON completo
+                        .build();
 
-            sensorDataList.add(dataDTO);
+                sensorDataList.add(dataDTO1);
+            } catch (Exception e) {
+                // Manejar excepciones al convertir a JSON
+                throw new RuntimeException("Error processing sensor data: " + e.getMessage(), e);
+            }
         }
 
         return saveSensorData(sensorApiKey, sensorDataList);
@@ -137,7 +140,7 @@ public class SensorDataServiceImpl implements ISensorDataService{
     }
 
     @Override
-    public List<SensorDataDTO> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds) {
+    public List<Map<String, Object>> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds) {
         // Validar que la compañía existe con la API key proporcionada
         Company company = companyRepository.findByCompanyApiKey(companyApiKey)
                 .orElseThrow(() -> new RuntimeException("Invalid Company API Key"));
@@ -168,15 +171,74 @@ public class SensorDataServiceImpl implements ISensorDataService{
         List<SensorData> sensorData = sensorDataRepository.findBySensorIdsAndTimeStampBetween(
                 validSensorIds, fromTimeStamp, toTimeStamp);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+
+        // Convertir los datos a DTOs, procesando el contenido del JSON
+        return sensorData.stream()
+                .map(data -> {
+                    Map<String, Object> resultMap = new HashMap<>();
+                    resultMap.put("id", data.getId());
+                    resultMap.put("sensorId", data.getSensor().getSensorId());
+
+                    // Procesar el JSON para extraer los datos individuales
+                    try {
+                        if (data.getReading() != null && !data.getReading().isEmpty()) {
+                            JsonNode jsonNode = objectMapper.readTree(data.getReading());
+
+                            // Crear un mapa de datos para almacenar los valores extraídos del JSON
+                            Map<String, Object> sensorValues = new HashMap<>();
+
+                            // Procesar todos los campos disponibles en el JSON
+                            jsonNode.fields().forEachRemaining(entry -> {
+                                sensorValues.put(entry.getKey(), parseJsonValue(entry.getValue()));
+                            });
+
+                            // Añadir este mapa como una propiedad adicional en el DTO
+                            resultMap.put("sensorValues", sensorValues);
+                        }
+                    } catch (Exception e) {
+                        // Manejar posibles errores al procesar el JSON
+                        System.err.println("Error al procesar JSON de lectura: " + e.getMessage());
+                        resultMap.put("sensorValues", new HashMap<>());
+                    }
+
+                    return resultMap;
+                })
+                .toList();
+
+        /*
         // Convertir los datos a DTOs
         return sensorData.stream()
                 .map(data -> SensorDataDTO.builder()
                         .id(data.getId())
                         .timeStamp(data.getTimeStamp())
-                        .temperature(data.getTemperature())
-                        .voltage(data.getVoltage())
+                        .reading(data.getReading())
                         .sensorId(data.getSensor().getSensorId())
                         .build())
-                .toList();
+                .toList();*/
     }
+
+    // Método auxiliar para convertir valores JsonNode a tipos Java apropiados
+    private Object parseJsonValue(JsonNode node) {
+        if (node.isNull()) {
+            return null;
+        } else if (node.isTextual()) {
+            return node.asText();
+        } else if (node.isInt()) {
+            return node.asInt();
+        } else if (node.isLong()) {
+            return node.asLong();
+        } else if (node.isDouble() || node.isFloat()) {
+            return node.asDouble();
+        } else if (node.isBoolean()) {
+            return node.asBoolean();
+        } else if (node.isObject() || node.isArray()) {
+            return node.toString();
+        } else {
+            return node.asText();
+        }
+    }
+
 }
