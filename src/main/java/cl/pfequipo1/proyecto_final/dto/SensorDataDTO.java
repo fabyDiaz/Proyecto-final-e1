@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,12 +21,11 @@ public class SensorDataDTO {
     @Schema(description = "Marca de tiempo de Data")
     private Integer timeStamp;
 
-    @Schema(description = "Temperatura de Data")
-    private Float temperature;
-
-    @Schema(description = "Voltage de Data")
-    private Float voltage;
+    @Schema(description = "Jason data")
+    private String reading; // JSON con los datos del sensor
 
     @Schema(description = "Id de Sensor de Data")
     private Integer sensorId;
+
+    private Map<String, Object> sensorValues; // Valores extraídos del JSON
 }

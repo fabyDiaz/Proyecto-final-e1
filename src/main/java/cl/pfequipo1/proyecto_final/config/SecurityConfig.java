@@ -51,6 +51,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/locations/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/locations/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/locations/**").hasRole("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/sensor_data/**").permitAll();
 
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/sensor/**").hasRole("ADMIN");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/sensor/**").hasRole("ADMIN");

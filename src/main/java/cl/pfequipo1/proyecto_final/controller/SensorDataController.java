@@ -56,7 +56,7 @@ public class SensorDataController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<SensorDataDTO>> getSensorData(
+    public ResponseEntity<List<Map<String, Object>>> getSensorData(
             @RequestParam(required = false) String company_api_key,
             @RequestHeader(value = "Company-Api-Key", required = false) String headerApiKey,
             @RequestParam Integer from,
@@ -71,7 +71,7 @@ public class SensorDataController {
         }
 
         try{
-            List<SensorDataDTO> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
+            List<Map<String, Object>> sensorData = sensorDataService.getSensorData(companyApiKey, from, to, sensor_id);
             return ResponseEntity.status(HttpStatus.OK).body(sensorData);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

@@ -20,9 +20,8 @@ public class SensorData {
     @Column(nullable = false)
     private Integer timeStamp; // Marca de tiempo (Epoch)
 
-    private Float temperature; // Temperatura (float)
-
-    private Float voltage; // Voltaje (float)
+    @Column(nullable = false)
+    private String reading;
 
     @ManyToOne
     @JoinColumn(name = "sensor_id", nullable = false)

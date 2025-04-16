@@ -1,8 +1,10 @@
 package cl.pfequipo1.proyecto_final.service;
 
 import cl.pfequipo1.proyecto_final.dto.SensorDataDTO;
+import cl.pfequipo1.proyecto_final.dto.SensorDataRequestDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ISensorDataService {
 
@@ -10,5 +12,7 @@ public interface ISensorDataService {
     List<SensorDataDTO> saveSensorData(String sensorApiKey, List<SensorDataDTO> sensorDataList);
 
     // Método para consultar datos de sensor usando company_api_key
-    List<SensorDataDTO> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds);
+    List<Map<String, Object>> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds);
+
+    List<SensorDataDTO> processSensorDataRequest(SensorDataRequestDTO requestDTO);
 }
