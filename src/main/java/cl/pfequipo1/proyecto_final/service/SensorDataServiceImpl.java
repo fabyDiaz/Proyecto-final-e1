@@ -208,17 +208,79 @@ public class SensorDataServiceImpl implements ISensorDataService{
                 })
                 .toList();
 
-        /*
-        // Convertir los datos a DTOs
-        return sensorData.stream()
-                .map(data -> SensorDataDTO.builder()
-                        .id(data.getId())
-                        .timeStamp(data.getTimeStamp())
-                        .reading(data.getReading())
-                        .sensorId(data.getSensor().getSensorId())
-                        .build())
-                .toList();*/
     }
+
+    @Override
+    @Transactional
+    public Map<String, Object> updateSensorData(String sensorApiKey, String dataId, Map<String, Object> updatedData) {
+        // Validar que el sensor existe con la API key proporcionada
+        Sensor sensor = sensorRepository.findBySensorApiKey(sensorApiKey)
+                .orElseThrow(() -> new RuntimeException("Invalid Sensor API Key"));
+
+        // Buscar el dato a actualizar
+        SensorData sensorData = sensorDataRepository.findById(dataId)
+                .orElseThrow(() -> new RuntimeException("Sensor data not found"));
+
+        // Verificar que el dato pertenece al sensor correcto
+        if (!sensorData.getSensor().getSensorId().equals(sensor.getSensorId())) {
+            throw new RuntimeException("Sensor data does not belong to the specified sensor");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Actualizamos el tiempo si viene en los datos actualizados
+            if (updatedData.containsKey("timestamp")) {
+                sensorData.setTimeStamp(convertToInteger(updatedData.get("timestamp")));
+            } else if (updatedData.containsKey("time")) {
+                sensorData.setTimeStamp(convertToInteger(updatedData.get("time")));
+            }
+
+            // Convertimos el mapa a JSON y lo guardamos en reading
+            String jsonReading = objectMapper.writeValueAsString(updatedData);
+            sensorData.setReading(jsonReading);
+
+            // Guardamos los cambios
+            SensorData updatedSensorData = sensorDataRepository.save(sensorData);
+
+            // Creamos el mapa de respuesta
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("id", updatedSensorData.getId());
+            resultMap.put("sensorId", updatedSensorData.getSensor().getSensorId());
+
+            // Extraemos y añadimos los valores del sensor
+            JsonNode jsonNode = objectMapper.readTree(updatedSensorData.getReading());
+            Map<String, Object> sensorValues = new HashMap<>();
+            jsonNode.fields().forEachRemaining(entry -> {
+                sensorValues.put(entry.getKey(), parseJsonValue(entry.getValue()));
+            });
+            resultMap.put("sensorValues", sensorValues);
+
+            return resultMap;
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating sensor data: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteSensorData(String sensorApiKey, String dataId) {
+        // Validar que el sensor existe con la API key proporcionada
+        Sensor sensor = sensorRepository.findBySensorApiKey(sensorApiKey)
+                .orElseThrow(() -> new RuntimeException("Invalid Sensor API Key"));
+
+        // Buscar el dato a eliminar
+        SensorData sensorData = sensorDataRepository.findById(dataId)
+                .orElseThrow(() -> new RuntimeException("Sensor data not found"));
+
+        // Verificar que el dato pertenece al sensor correcto
+        if (!sensorData.getSensor().getSensorId().equals(sensor.getSensorId())) {
+            throw new RuntimeException("Sensor data does not belong to the specified sensor");
+        }
+
+        // Eliminar el dato
+        sensorDataRepository.delete(sensorData);
+    }
+
 
     // Método auxiliar para convertir valores JsonNode a tipos Java apropiados
     private Object parseJsonValue(JsonNode node) {

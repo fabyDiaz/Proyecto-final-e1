@@ -4,8 +4,10 @@ import cl.pfequipo1.proyecto_final.dto.SensorDataDTO;
 import cl.pfequipo1.proyecto_final.dto.SensorDataRequestDTO;
 import cl.pfequipo1.proyecto_final.service.SensorDataServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +52,20 @@ public class SensorDataController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Datos encontrados",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = SensorDataDTO.class, type = "array"))),
+                                    array = @ArraySchema(schema = @Schema(
+                                            type = "object",
+                                            example = """
+                                    {
+                                      "id": "43ea0bf1-df2a-4f6f-adce-46b00da19985",
+                                      "sensorId": 8,
+                                      "sensorValues": {
+                                        "temp": 25,
+                                        "humidity": 0.4,
+                                        "timestamp": 1744760456
+                                      }
+                                    }
+                                    """
+                                    )))),
                     @ApiResponse(responseCode = "401", description = "API Key no proporcionada o inválida"),
                     @ApiResponse(responseCode = "404", description = "Datos no encontrados")
             }
@@ -76,7 +91,55 @@ public class SensorDataController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
 
 
+    @Operation(
+            summary = "Actualizar datos de un sensor",
+            description = "Actualiza los datos de un sensor existente",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Datos actualizados correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Datos no encontrados")
+            }
+    )
+    @PutMapping("/{dataId}")
+    public ResponseEntity<?> updateSensorData(
+            @RequestParam String sensor_api_key,
+            @PathVariable String dataId,
+            @RequestBody Map<String, Object> updatedData) {
+        try {
+            Map<String, Object> result = sensorDataService.updateSensorData(sensor_api_key, dataId, updatedData);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException ex) {
+            String errorMessage = ex.getMessage();
+            HttpStatus status = errorMessage.contains("not found") ?
+                    HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status).body(Map.of("error", errorMessage));
+        }
+    }
+
+    @Operation(
+            summary = "Eliminar datos de un sensor",
+            description = "Elimina los datos de un sensor existente",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Datos eliminados correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+                    @ApiResponse(responseCode = "404", description = "Datos no encontrados")
+            }
+    )
+    @DeleteMapping("/{dataId}")
+    public ResponseEntity<?> deleteSensorData(
+            @RequestParam String sensor_api_key,
+            @PathVariable String dataId) {
+        try {
+            sensorDataService.deleteSensorData(sensor_api_key, dataId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException ex) {
+            String errorMessage = ex.getMessage();
+            HttpStatus status = errorMessage.contains("not found") ?
+                    HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status).body(Map.of("error", errorMessage));
+        }
     }
 }
