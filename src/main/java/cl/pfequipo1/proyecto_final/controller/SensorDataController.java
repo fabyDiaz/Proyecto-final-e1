@@ -134,7 +134,7 @@ public class SensorDataController {
             @PathVariable String dataId) {
         try {
             sensorDataService.deleteSensorData(sensor_api_key, dataId);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.OK).body("Se elimina data del Sensor: " + dataId);
         } catch (RuntimeException ex) {
             String errorMessage = ex.getMessage();
             HttpStatus status = errorMessage.contains("not found") ?

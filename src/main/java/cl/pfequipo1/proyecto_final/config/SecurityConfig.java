@@ -33,7 +33,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     // Ruta de acceso a la documentacion
-                    auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll();
+                    auth.requestMatchers(
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui.html",
+                            "/webjars/**"
+                    ).permitAll();
+
                     // Rutas públicas para visualizar compañías y localidades
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/locations/**").permitAll();
