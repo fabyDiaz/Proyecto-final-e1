@@ -89,29 +89,19 @@ public class LocationController {
 
     }
 
-    @Operation(
-            summary = "Elimina una Locacion",
-            description = "Elimina una Locacion segun su Id",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Locacion eliminada",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = LocationDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Locacion no eliminada")
-            }
-    )
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{locationId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> delete(@PathVariable Integer locationId,@RequestHeader("company-api-key") String companyApiKey) {
-        try{
-            //Validar companyapikey con location
+    public ResponseEntity<String> delete(
+            @PathVariable Integer locationId,
+            @RequestHeader("company-api-key") String companyApiKey) {
+        try {
             locationService.delete(locationId, companyApiKey);
-            return ResponseEntity.status(HttpStatus.OK).body("Locacion eliminada");
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe Locacion o API Key erróneo");
+            return ResponseEntity.status(HttpStatus.OK).body("Locación " + locationId +" eliminada");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe locación o API Key erróneo");
         }
-
     }
+
 
     @Operation(
             summary = "Actualiza una Locacion",

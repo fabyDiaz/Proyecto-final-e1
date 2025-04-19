@@ -15,4 +15,8 @@ public interface ISensorDataService {
     List<Map<String, Object>> getSensorData(String companyApiKey, Integer fromTimeStamp, Integer toTimeStamp, List<Integer> sensorIds);
 
     List<SensorDataDTO> processSensorDataRequest(SensorDataRequestDTO requestDTO);
+
+    Map<String, Object> updateSensorData(String sensorApiKey, String dataId, Map<String, Object> updatedData);
+
+    void deleteSensorData(String sensorApiKey, String dataId);
 }

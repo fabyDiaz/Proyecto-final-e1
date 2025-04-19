@@ -1,159 +1,48 @@
-# 🛰️ Proyecto Final - API IoT Backend (Java + Spring Boot)
+# IoT API - Proyecto Final Backend Java Developer
 
-## 📌 Descripción General
+Este proyecto corresponde al desarrollo de una API REST para la recolección, almacenamiento y consulta de datos provenientes de dispositivos IoT (ESP32 y Zigbee) en un entorno minero. La solución fue implementada usando **Java + Spring Boot**, con seguridad basada en **Spring Security (Basic Auth)**, documentación con **Swagger**, base de datos en **PostgreSQL**, y desplegada en **AWS EC2**.
 
-Este proyecto consiste en el desarrollo de una **API REST** en Java para una plataforma IoT orientada al sector minero. Su objetivo principal es permitir el **registro, almacenamiento y consulta de datos** generados por sensores distribuidos en distintas ubicaciones, asegurando trazabilidad, seguridad y eficiencia en la integración de dispositivos de distintas tecnologías (ESP32 y Zigbee).
+## 🧠 Objetivo del Proyecto
+
+Construir una API robusta, segura y escalable, capaz de recibir datos desde sensores IoT (vía HTTP y MQTT), almacenarlos, y permitir su posterior consulta y filtrado.
 
 ---
 
 ## 🚀 Tecnologías Utilizadas
 
-- **Java 21**
-- **Spring Boot 3.4.2**
-- **Spring Security (roles & JWT)**
-- **PostgreSQL** (base de datos relacional)
-- **Spring Data JPA / Hibernate**
-- **Maven**
-- **Swagger / SpringDoc OpenAPI**
-- **Postman (para pruebas)**
+- Java 17
+- Spring Boot
+- Spring Security (Basic Auth)
+- PostgreSQL
+- Swagger (Springdoc)
+- AWS EC2
+- Maven
 
 ---
 
-## 🧱 Modelo Entidad - Relación
+## 🔐 Seguridad
 
-El sistema se compone de las siguientes entidades y relaciones:
-
-### 🔹 Admin
-- `username`: nombre de usuario
-- `password`: contraseña encriptada
-
-### 🔹 Company
-- `id`: identificador único
-- `company_name`: nombre de la empresa
-- `company_api_key`: clave única para autenticación en consultas
-
-### 🔹 Location
-- `location_id`: identificador único
-- `company_id`: referencia a la compañía
-- `location_name`: nombre del lugar
-- `location_country`, `location_city`: ubicación geográfica
-- `location_meta`: datos adicionales
-
-### 🔹 Sensor
-- `sensor_id`: identificador único
-- `location_id`: referencia a la ubicación
-- `sensor_name`: nombre
-- `sensor_category`: tipo o clase del sensor
-- `sensor_meta`: descripción
-- `sensor_api_key`: clave de autenticación del dispositivo
-
-### 🔹 Sensor Data
-- `id`: identificador de la medición
-- `sensor_id`: referencia al sensor
-- `time_stamp`: marca de tiempo (EPOCH)
-- `temperature`, `humidity`, `voltage`: valores capturados
+- La API utiliza **autenticación básica (Basic Auth)**.
+- Solo existe **un usuario administrador**, quien puede:
+    - Crear, editar y eliminar compañías, ubicaciones, sensores y datos.
+- Las operaciones de lectura (GET) son públicas siempre y cuando se incluya el `company_api_key` o `sensor_api_key` correspondiente.
 
 ---
 
-## 📡 Endpoints Principales
+## 🌐 URLs Importantes
 
-> Todos los endpoints requieren `company-api-key` en los headers, excepto la inserción de `sensor_data`, que usa `sensor_api_key`.
-
-### 🏢 Company (`/api/v1/companies`)
-- `POST`: Crear compañía (`ADMIN`)
-- `GET`: Listar compañías (`ADMIN`)
-- `PUT /{id}`: Editar compañía
-- `DELETE /{id}`: Eliminar compañía
-
-### 📍 Location (`/api/v1/locations`)
-- `POST`: Crear locación
-- `GET`: Listar todas las locaciones
-- `GET /{id}`: Obtener locación por ID
-- `PUT /{id}`: Actualizar locación (`ADMIN`)
-- `DELETE /{id}`: Eliminar locación (`ADMIN`)
-
-### 📦 Sensor (`/api/v1/sensors`)
-- `POST`: Crear sensor
-- `GET`: Listar sensores
-- `GET /{id}`: Consultar sensor
-- `PUT /{id}`: Actualizar sensor
-- `DELETE /{id}`: Eliminar sensor
-
-### 📈 Sensor Data (`/api/v1/sensor_data`)
-- `POST`: Insertar datos (con `sensor_api_key`)
-- `GET`: Consultar datos históricos  
-  Parámetros:
-  - `from`: timestamp (EPOCH)
-  - `to`: timestamp (EPOCH)
-  - `sensor_id`: lista de IDs
+- **API Base**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/)
+- **Documentación Swagger**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html)
 
 ---
 
-## 🛡️ Seguridad
+## 🧱 Estructura de Datos
 
-- Roles: `ADMIN` y usuarios autenticados.
-- Seguridad basada en JWT (configurable con Spring Security).
-- Protección por `@PreAuthorize` en endpoints sensibles.
-- Acceso a datos mediante API keys (`company_api_key`, `sensor_api_key`).
+El sistema considera las siguientes entidades:
 
----
+- **Admin**: usuario autenticado vía Basic Auth.
+- **Company**: representa una empresa minera. Tiene un `company_api_key`.
+- **Location**: lugar físico donde están los sensores.
+- **Sensor**: contiene metainformación del sensor y una `sensor_api_key`.
+- **Sensor Data**: mediciones enviadas por los sensores en formato JSON.
 
-## ⚙️ Instalación y Ejecución
-
-### 1. Clonar repositorio
-```bash
-git clone https://github.com/<tu_usuario>/iot-api-backend.git
-cd iot-api-backend
-```
-
-### 2. Configurar base de datos
-Editar `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/iotdb
-spring.datasource.username=postgres
-spring.datasource.password=tu_clave
-spring.jpa.hibernate.ddl-auto=update
-```
-
-### 3. Ejecutar el proyecto
-```bash
-./mvnw spring-boot:run
-```
-
-Acceso local: [http://localhost:8080](http://localhost:8080)  
-Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
----
-
-## 🧪 Pruebas con Postman
-
-1. Importa la colección `IoT_API.postman_collection.json`.
-2. Asegúrate de tener una `company_api_key` válida.
-3. Realiza pruebas con:
-   - Creación de locaciones y sensores.
-   - Inserción de datos.
-   - Consultas por tiempo.
-
----
-
-## 📁 Archivos clave
-
-- `LocationController.java`: CRUD de ubicaciones
-- `CompanyController.java`: Gestión de compañías
-- `SensorController.java`: Registro de sensores
-- `SensorDataController.java`: Ingesta y consulta de datos
-- `CompanyServiceImpl.java`: Lógica del negocio
-
----
-
-## 📍 Notas adicionales
-
-
-
----
-
-## 🧑‍💻 Autor / Equipo
-
-> Proyecto desarrollado por el grupo **Equipo 1**, cohorte Backend Java Developer 2024–2025  
-
----
