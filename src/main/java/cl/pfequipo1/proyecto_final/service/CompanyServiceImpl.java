@@ -112,12 +112,29 @@ public class CompanyServiceImpl implements ICompanyService {
                 .build();
     }
 
-    @Override
+  /*  @Override
     @PreAuthorize("hasRole('ADMIN')")
     public void delete(Integer id) {
         // Verificar si la compañía existe
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found with ID: " + id));
+
+        // Eliminar la compañía
+        companyRepository.delete(company);
+    }
+    */
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(Integer id, String companyApiKey) {
+        // Buscar la compañía por ID
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found with ID: " + id));
+
+        // Verificar que la API Key coincida con la compañía encontrada
+        if (!company.getCompanyApiKey().equals(companyApiKey)) {
+            throw new SecurityException("Invalid Company API Key for the provided company ID");
+        }
 
         // Eliminar la compañía
         companyRepository.delete(company);

@@ -3,6 +3,7 @@ package cl.pfequipo1.proyecto_final.controller;
 import cl.pfequipo1.proyecto_final.dto.CompanyDTO;
 import cl.pfequipo1.proyecto_final.dto.CompanyRequestDTO;
 import cl.pfequipo1.proyecto_final.service.CompanyServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -124,7 +123,7 @@ public class CompanyController {
             }
     )
 
-    @DeleteMapping("/{id}")
+  /*  @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
         logger.info("Deleting all Companies for id {} From Company Controller", id);
@@ -133,6 +132,23 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.OK).body("Se elimina la compañía con el ID: " + id);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe compañía a Eliminar");
+        }
+    }
+*/
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteCompany(
+            @PathVariable Integer id,
+            @RequestHeader("company-api-key") String companyApiKey) {
+        try {
+            companyService.delete(id, companyApiKey);
+            return ResponseEntity.ok("Compañía " + id + " eliminada correctamente");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar compañía "+ id);
         }
     }
 
