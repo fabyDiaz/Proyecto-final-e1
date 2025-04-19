@@ -33,6 +33,8 @@ Construir una API robusta, segura y escalable, capaz de recibir datos desde sens
 
 - **API Base**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/)
 - **Documentación Swagger**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html)
+- **Informe Técnico**: [https://drive.google.com/file/d/1n7LQOSlvzCzS6xLwMkueKtIM1VBGkZWs/view?usp=sharing](https://drive.google.com/file/d/1n7LQOSlvzCzS6xLwMkueKtIM1VBGkZWs/view?usp=sharing)
+- **Kafka consumer**: [https://github.com/fabyDiaz/kafka-proyecto-final-tf/tree/master/Kafka-consumer/Kafka-consumer](https://github.com/fabyDiaz/kafka-proyecto-final-tf/tree/master/Kafka-consumer/Kafka-consumer)
 
 ---
 
