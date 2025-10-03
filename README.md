@@ -33,7 +33,8 @@ Construir una API robusta, segura y escalable, capaz de recibir datos desde sens
 
 - **API Base**: [http://iot-api.fabydev.cl/api/v1/](http://iot-api.fabydev.cl/api/v1/)
 - **Documentación Swagger**: [http://iot-api.fabydev.cl/swagger-ui/index.html](http://iot-api.fabydev.cl/swagger-ui/index.html)
-
+- **Informe Técnico**: [https://drive.google.com/file/d/1n7LQOSlvzCzS6xLwMkueKtIM1VBGkZWs/view?usp=sharing](https://drive.google.com/file/d/1n7LQOSlvzCzS6xLwMkueKtIM1VBGkZWs/view?usp=sharing)
+- **Kafka consumer**: [https://github.com/fabyDiaz/kafka-proyecto-final-tf/tree/master/Kafka-consumer/Kafka-consumer](https://github.com/fabyDiaz/kafka-proyecto-final-tf/tree/master/Kafka-consumer/Kafka-consumer)
 ---
 
 ## 🧱 Estructura de Datos
@@ -47,5 +48,5 @@ El sistema considera las siguientes entidades:
 - **Sensor Data**: mediciones enviadas por los sensores en formato JSON.
 
 ## 🧩 Arquitectura del proyecto
-![arquitectura](assets/arquiecturasistemaiot.drawio.png)
+<img src="assets/arquiecturasistemaiot.drawio.png" alt="Arquitectura" width="600">
 
