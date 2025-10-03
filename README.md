@@ -31,8 +31,8 @@ Construir una API robusta, segura y escalable, capaz de recibir datos desde sens
 
 ## 🌐 URLs Importantes
 
-- **API Base**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/)
-- **Documentación Swagger**: [http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html](http://ec2-34-224-97-205.compute-1.amazonaws.com:8080/swagger-ui/index.html)
+- **API Base**: [http://iot-api.fabydev.cl/api/v1/](http://iot-api.fabydev.cl/api/v1/)
+- **Documentación Swagger**: [http://iot-api.fabydev.cl/swagger-ui/index.html](http://iot-api.fabydev.cl/swagger-ui/index.html)
 
 ---
 
@@ -45,4 +45,7 @@ El sistema considera las siguientes entidades:
 - **Location**: lugar físico donde están los sensores.
 - **Sensor**: contiene metainformación del sensor y una `sensor_api_key`.
 - **Sensor Data**: mediciones enviadas por los sensores en formato JSON.
+
+## 🧩 Arquitectura del proyecto
+![arquitectura](assets/arquiecturasistemaiot.drawio.png)
 
